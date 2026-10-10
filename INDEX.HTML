@@ -1,0 +1,1954 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Powered Smart Traffic Light | Aditya Sahu</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #050816;
+  --panel: #0d1630;
+  --cyan: #00f0ff;
+  --blue: #4285ff;
+  --purple: #a855f7;
+  --pink: #ff4ecd;
+  --green: #35ff9b;
+  --yellow: #ffda57;
+  --red: #ff496c;
+  --text: #f5f7ff;
+  --muted: #a4b1ce;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 10%, #07527b55, transparent 32%),
+    radial-gradient(circle at 90% 30%, #7025a744, transparent 35%),
+    linear-gradient(#ffffff07 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff07 1px, transparent 1px);
+  background-size: auto, auto, 40px 40px, 40px 40px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.container {
+  width: min(1160px, 92%);
+  margin: auto;
+}
+
+.gradient {
+  background: linear-gradient(100deg, var(--cyan), #8b83ff 55%, var(--pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+section {
+  padding: 85px 0;
+  scroll-margin-top: 85px;
+}
+
+.tag {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.section-heading {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 42px;
+}
+
+.section-heading h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(25px, 4vw, 41px);
+  line-height: 1.4;
+  margin-bottom: 15px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.95;
+}
+
+/* WELCOME SCREEN */
+
+#intro {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 70px 20px;
+  background:
+    radial-gradient(ellipse at 50% 48%, #093c6655, transparent 54%),
+    radial-gradient(ellipse at 50% 100%, #6418a52b, transparent 55%);
+}
+
+#intro::before,
+#intro::after {
+  content: "";
+  position: absolute;
+  width: 430px;
+  height: 430px;
+  border: 1px solid #00f0ff27;
+  border-radius: 50%;
+  animation: rotate 28s linear infinite;
+}
+
+#intro::before {
+  left: -260px;
+  top: 8%;
+  box-shadow: 0 0 70px #00f0ff0a;
+}
+
+#intro::after {
+  right: -270px;
+  bottom: -12%;
+  border-color: #b24dff38;
+  animation-direction: reverse;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 3;
+  max-width: 970px;
+  animation: appear 1s ease both;
+}
+
+.top-label {
+  display: inline-block;
+  padding: 11px 18px;
+  border: 1px solid #00f0ff66;
+  border-radius: 40px;
+  background: #00f0ff0d;
+  color: var(--cyan);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 27px;
+  box-shadow: 0 0 30px #00f0ff0c;
+}
+
+#intro h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(35px, 7vw, 83px);
+  line-height: 1.18;
+  letter-spacing: -2px;
+  margin-bottom: 25px;
+  text-shadow: 0 0 45px #00f0ff17;
+}
+
+#intro h2 {
+  font-size: clamp(16px, 2.7vw, 24px);
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+#intro p {
+  max-width: 760px;
+  margin: auto;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2.1;
+}
+
+.intro-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 32px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 15px 23px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  transition: .25s;
+}
+
+.btn:hover {
+  transform: translateY(-4px);
+}
+
+.btn-primary {
+  color: #03111b;
+  background: linear-gradient(100deg, var(--cyan), #77bdff);
+  box-shadow: 0 0 28px #00f0ff35;
+}
+
+.btn-secondary {
+  background: #ffffff08;
+  color: white;
+  border-color: #ffffff30;
+}
+
+.intro-credit {
+  margin-top: 37px;
+  color: #8798b9;
+  font-size: 11px;
+  line-height: 2.1;
+}
+
+.intro-credit strong {
+  color: var(--cyan);
+  letter-spacing: 1px;
+}
+
+.floating {
+  position: absolute;
+  z-index: 1;
+  font-size: 28px;
+  opacity: .55;
+  animation: float 5s ease-in-out infinite;
+}
+
+.f1 { top: 17%; left: 10%; }
+.f2 { top: 25%; right: 11%; animation-delay: 1s; }
+.f3 { bottom: 20%; left: 14%; animation-delay: 2s; }
+.f4 { bottom: 15%; right: 15%; animation-delay: .5s; }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 18px;
+  color: #7082a4;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+/* NAVIGATION */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #050816ed;
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid #ffffff13;
+}
+
+.nav {
+  min-height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.brand span {
+  color: var(--cyan);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.nav-links a:hover {
+  color: var(--cyan);
+}
+
+.nav-project {
+  white-space: nowrap;
+  background: var(--cyan);
+  color: #04101a;
+  padding: 11px 13px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* PROJECT CONTENT */
+
+#project {
+  display: none;
+}
+
+#project.visible {
+  display: block;
+  animation: appear .7s ease;
+}
+
+.hero {
+  min-height: 580px;
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  align-items: center;
+  gap: 35px;
+}
+
+.hero h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(32px, 5vw, 59px);
+  line-height: 1.25;
+  margin-bottom: 22px;
+}
+
+.hero p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2.1;
+}
+
+.hero .btn {
+  margin-top: 25px;
+}
+
+.traffic-visual {
+  min-height: 390px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.orbit {
+  position: absolute;
+  width: 310px;
+  height: 310px;
+  border: 1px solid #00f0ff42;
+  border-radius: 50%;
+  animation: rotate 24s linear infinite;
+}
+
+.orbit.two {
+  width: 240px;
+  height: 240px;
+  border-color: #a855f766;
+  animation-direction: reverse;
+}
+
+.orbit::after {
+  content: "";
+  position: absolute;
+  top: 32px;
+  right: 45px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 20px var(--cyan);
+}
+
+.big-light {
+  position: relative;
+  z-index: 2;
+  width: 128px;
+  padding: 13px;
+  border-radius: 23px;
+  background: linear-gradient(145deg, #1a2943, #080c18);
+  border: 1px solid #ffffff35;
+  box-shadow: 0 0 55px #00f0ff17;
+}
+
+.big-lamp {
+  width: 67px;
+  height: 67px;
+  margin: 9px auto;
+  border: 4px solid #111a2b;
+  border-radius: 50%;
+  background: #202a40;
+}
+
+.big-lamp.red.on {
+  background: var(--red);
+  box-shadow: 0 0 25px var(--red);
+}
+
+.big-lamp.yellow.on {
+  background: var(--yellow);
+  box-shadow: 0 0 25px var(--yellow);
+}
+
+.big-lamp.green.on {
+  background: var(--green);
+  box-shadow: 0 0 25px var(--green);
+}
+
+/* CONTENT CARDS */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.card {
+  padding: 25px;
+  background: linear-gradient(145deg, #111c35, #0a1020);
+  border: 1px solid #ffffff16;
+  border-radius: 15px;
+  transition: .3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  border-color: #00f0ff66;
+  box-shadow: 0 15px 35px #00f0ff0d;
+}
+
+.card-icon {
+  font-size: 28px;
+  margin-bottom: 17px;
+}
+
+.card h3 {
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.95;
+}
+
+.long-content {
+  max-width: 960px;
+  margin: auto;
+  padding: 30px;
+  border-radius: 15px;
+  border: 1px solid #ffffff17;
+  background: linear-gradient(145deg, #101a31, #090f20);
+}
+
+.long-content h3 {
+  margin: 25px 0 12px;
+  color: var(--cyan);
+  font-size: 17px;
+}
+
+.long-content h3:first-child {
+  margin-top: 0;
+}
+
+.long-content p,
+.long-content li {
+  color: #b2bfd9;
+  font-size: 12px;
+  line-height: 2.05;
+}
+
+.long-content ul,
+.long-content ol {
+  padding-left: 22px;
+}
+
+.long-content li {
+  margin: 7px 0;
+}
+
+.advantage {
+  border-top: 2px solid var(--green);
+}
+
+.disadvantage {
+  border-top: 2px solid var(--red);
+}
+
+.step-card {
+  border-top: 2px solid var(--purple);
+}
+
+.number {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+
+/* INTERACTIVE TRAFFIC DASHBOARD */
+
+.dashboard {
+  padding: 25px;
+  background: #0b1224;
+  border: 1px solid #ffffff19;
+  border-radius: 16px;
+}
+
+.dashboard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 23px;
+}
+
+.dashboard-head h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+}
+
+.live {
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.lanes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 17px;
+}
+
+.lane {
+  padding: 20px;
+  border: 1px solid #ffffff14;
+  border-radius: 13px;
+  background: #060b18;
+}
+
+.lane-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+}
+
+.pill {
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #ffffff0b;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.signal-row {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  margin: 24px 0;
+}
+
+.mini-light {
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: #121b2d;
+}
+
+.mini-lamp {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 5px 0;
+  background: #273148;
+}
+
+.mini-lamp.red.on {
+  background: var(--red);
+  box-shadow: 0 0 12px var(--red);
+}
+
+.mini-lamp.yellow.on {
+  background: var(--yellow);
+  box-shadow: 0 0 12px var(--yellow);
+}
+
+.mini-lamp.green.on {
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+}
+
+.lane-status {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 7px;
+}
+
+.progress {
+  height: 5px;
+  background: #ffffff12;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 13px;
+}
+
+.progress div {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  transition: width .3s;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.control {
+  border: 1px solid #ffffff20;
+  background: #17223b;
+  color: white;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.control:hover {
+  border-color: var(--cyan);
+}
+
+.control.primary {
+  background: var(--cyan);
+  color: #06101b;
+}
+
+.control.emergency {
+  background: #ff496c18;
+  color: #ff8ca1;
+  border-color: #ff496c60;
+}
+
+.control.emergency:hover {
+  background: var(--red);
+  color: white;
+}
+
+.telemetry {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.telemetry-item {
+  padding: 15px;
+  border-radius: 9px;
+  background: #070c18;
+  border: 1px solid #ffffff10;
+}
+
+.telemetry-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 7px;
+}
+
+.telemetry-item strong {
+  color: var(--cyan);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+}
+
+.log {
+  margin-top: 20px;
+  padding: 18px;
+  border-radius: 11px;
+  background: #070c18;
+  border: 1px solid #ffffff10;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 2;
+  max-height: 200px;
+  overflow: auto;
+}
+
+.log-title {
+  color: var(--cyan);
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.disclaimer {
+  color: #8293b1;
+  font-size: 10px;
+  line-height: 1.9;
+  margin-top: 17px;
+}
+
+/* CREATOR */
+
+.creator {
+  text-align: center;
+  padding: 75px 20px;
+  background:
+    radial-gradient(ellipse at 50% 0%, #0a719033, transparent 65%),
+    #080d1c;
+  border-top: 1px solid #ffffff17;
+}
+
+.creator-badge {
+  width: 90px;
+  height: 90px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 23px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--purple), var(--pink));
+  color: #06101b;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  box-shadow: 0 0 40px #00f0ff30;
+}
+
+.creator h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(24px, 4vw, 39px);
+  margin-bottom: 18px;
+}
+
+.creator p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 2.2;
+}
+
+.creator strong {
+  color: var(--cyan);
+}
+
+footer {
+  padding: 25px 15px;
+  text-align: center;
+  color: #7888a8;
+  font-size: 10px;
+  line-height: 2;
+  border-top: 1px solid #ffffff10;
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 300;
+  max-width: 320px;
+  padding: 14px 18px;
+  border: 1px solid #00f0ff80;
+  border-radius: 10px;
+  background: #111b31;
+  font-size: 11px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: .3s;
+  pointer-events: none;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes rotate {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media(max-width: 850px) {
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; }
+  .traffic-visual { min-height: 350px; }
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media(max-width: 580px) {
+  section { padding: 60px 0; }
+  .card-grid, .lanes, .telemetry { grid-template-columns: 1fr; }
+  .long-content { padding: 20px; }
+  .dashboard { padding: 14px; }
+  #intro h1 { letter-spacing: -1px; }
+  .nav-project { font-size: 9px; }
+  .orbit { width: 280px; height: 280px; }
+  .orbit.two { width: 220px; height: 220px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= WELCOME SCREEN ================= -->
+
+<section id="intro">
+  <div class="floating f1">⚡</div>
+  <div class="floating f2">🚦</div>
+  <div class="floating f3">🌐</div>
+  <div class="floating f4">🚘</div>
+
+  <div class="intro-content">
+
+    <div class="top-label">
+      ✦ NEXT-GENERATION SCHOOL INNOVATION PROJECT ✦
+    </div>
+
+    <h1>
+      AI POWERED<br>
+      <span class="gradient">SMART TRAFFIC LIGHT</span>
+    </h1>
+
+    <h2>Intelligent Roads. Safer Journeys. Smarter Cities.</h2>
+
+    <p>
+      Welcome to the future of intelligent traffic management!
+      Discover how Artificial Intelligence, RFID technology and smart
+      traffic signals could help reduce unnecessary waiting, support
+      emergency vehicle priority and make our roads more efficient.
+      One innovative idea can inspire a smarter tomorrow.
+    </p>
+
+    <div class="intro-buttons">
+      <button class="btn btn-primary" onclick="startProject()">
+        🚀 START PROJECT
+      </button>
+
+      <a href="#creator" class="btn btn-secondary"
+         onclick="showCreatorFromWelcome(event)">
+        ✨ MEET THE CREATOR
+      </a>
+    </div>
+
+    <div class="intro-credit">
+      CREATED BY <strong>ADITYA SAHU</strong><br>
+      Student from Mumbai Utkal English High School, Mumbai
+    </div>
+
+  </div>
+
+  <div class="scroll-hint">AN INNOVATION FOR TOMORROW ↓</div>
+</section>
+
+<!-- ================= MAIN WEBSITE ================= -->
+
+<div id="project">
+
+<header>
+  <div class="container nav">
+    <a class="brand" href="#home">
+      AI POWERED <span>SMART TRAFFIC LIGHT</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#technology">Technology</a>
+      <a href="#working">Working</a>
+      <a href="#advantages">Advantages</a>
+      <a href="#demo">Live Demo</a>
+      <a href="#creator">Creator</a>
+    </nav>
+
+    <a href="#demo" class="nav-project">TRY LIVE DEMO ↗</a>
+  </div>
+</header>
+
+<!-- HOME -->
+
+<section id="home">
+  <div class="container hero">
+
+    <div>
+      <div class="tag">01 / WELCOME TO THE PROJECT</div>
+
+      <h2>
+        Traffic Management,<br>
+        <span class="gradient">Reimagined with AI.</span>
+      </h2>
+
+      <p>
+        Traffic congestion is one of the common challenges faced by growing
+        cities. Traditional traffic signals often follow fixed timings,
+        even when the number of vehicles on different roads changes.
+        AI Powered Smart Traffic Light explores a smarter approach using
+        Artificial Intelligence, RFID identification and responsive signals.
+        <br><br>
+        The goal is to understand how technology could improve traffic flow,
+        assist emergency response and encourage safer roads for everyone.
+      </p>
+
+      <a href="#about" class="btn btn-primary">EXPLORE THE PROJECT ↓</a>
+    </div>
+
+    <div class="traffic-visual">
+      <div class="orbit"></div>
+      <div class="orbit two"></div>
+
+      <div class="big-light">
+        <div class="big-lamp red on"></div>
+        <div class="big-lamp yellow"></div>
+        <div class="big-lamp green"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT THE PROJECT -->
+
+<section id="about">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">02 / INTRODUCTION</div>
+      <h2>About <span class="gradient">Our Project</span></h2>
+      <p>
+        Understanding the problem, the idea and the objectives behind
+        AI Powered Smart Traffic Light.
+      </p>
+    </div>
+
+    <div class="long-content">
+
+      <h3>Introduction</h3>
+      <p>
+        AI Powered Smart Traffic Light is an educational innovation project
+        that explores the use of Artificial Intelligence (AI), Radio Frequency
+        Identification (RFID) and intelligent signal management. The purpose
+        is to understand how technology could help traffic systems respond
+        more effectively to changing road conditions.
+      </p>
+
+      <h3>Why Is This Project Needed?</h3>
+      <p>
+        Busy roads can experience congestion, long waiting times, fuel
+        wastage and delays. Emergency vehicles such as ambulances and fire
+        engines may also face difficulties while travelling through crowded
+        intersections. Traffic management is a complex problem, and technology
+        is one of the tools that may help address it.
+      </p>
+
+      <h3>Our Main Idea</h3>
+      <p>
+        Imagine a traffic system that can analyse traffic conditions,
+        estimate which lanes need more green time and identify authorised
+        emergency priority requests. AI may help analyse traffic information,
+        while compatible RFID equipment could help identify a tagged vehicle.
+        A properly designed controller would then apply any signal change
+        according to approved safety rules.
+      </p>
+
+      <h3>Objectives of the Project</h3>
+      <ul>
+        <li>To understand the role of Artificial Intelligence in traffic management.</li>
+        <li>To learn about RFID technology and vehicle identification.</li>
+        <li>To explore the concept of emergency vehicle priority.</li>
+        <li>To understand how responsive signal timing could help traffic flow.</li>
+        <li>To encourage road safety and environmental awareness.</li>
+        <li>To demonstrate the concept through an interactive website simulation.</li>
+      </ul>
+
+      <h3>Project Scope</h3>
+      <p>
+        This website demonstrates the concept using a browser-based simulation.
+        It does not connect to physical traffic lights, RFID readers, road
+        sensors or emergency services. Real-world implementation would require
+        authorised hardware, professional engineering, testing and safety
+        approval.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGY -->
+
+<section id="technology">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">03 / CORE TECHNOLOGY</div>
+      <h2>The Technology <span class="gradient">Behind the Idea</span></h2>
+      <p>
+        Three important technologies can contribute to the concept
+        of intelligent traffic management.
+      </p>
+    </div>
+
+    <div class="card-grid">
+
+      <article class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Artificial Intelligence</h3>
+        <p>
+          Artificial Intelligence is a field of computer science that enables
+          computers to analyse information, recognise patterns and assist
+          decision-making. In traffic systems, AI could help estimate
+          congestion, analyse traffic patterns and recommend suitable
+          signal timings.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">📡</div>
+        <h3>RFID Technology</h3>
+        <p>
+          RFID stands for Radio Frequency Identification. It uses radio waves
+          to identify tagged objects through a compatible reader. An authorised
+          vehicle could use an RFID tag to identify itself to a connected
+          system, subject to verification and security checks.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">🚦</div>
+        <h3>Smart Traffic Signals</h3>
+        <p>
+          Smart signals can use traffic information to adjust signal timings
+          within approved limits. Safe systems must include clearance intervals,
+          conflict prevention, pedestrian protection and reliable fallback
+          behaviour.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">📷</div>
+        <h3>Traffic Sensors</h3>
+        <p>
+          Sensors and cameras can provide information about traffic volume,
+          vehicle movement and queue lengths. This information can help
+          traffic controllers understand changing road conditions.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">🖥️</div>
+        <h3>Control Dashboard</h3>
+        <p>
+          A control dashboard can display signal status, system alerts and
+          recorded events. It helps authorised operators monitor the system
+          and identify problems that need attention.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">🔒</div>
+        <h3>Safety and Security</h3>
+        <p>
+          A real system must verify priority requests, protect communication,
+          prevent unauthorised access and preserve safe signal operation
+          even if a sensor or communication link fails.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- WORKING -->
+
+<section id="working">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">04 / WORKING PRINCIPLE</div>
+      <h2>How Does It <span class="gradient">Work?</span></h2>
+      <p>
+        The proposed concept follows a sequence of detection, analysis,
+        decision-making and monitoring.
+      </p>
+    </div>
+
+    <div class="card-grid">
+
+      <article class="card step-card">
+        <div class="number">STEP 01</div>
+        <h3>Traffic Detection</h3>
+        <p>
+          Sensors or cameras collect information about vehicles and queues.
+          The controller uses this information to understand the current
+          traffic situation.
+        </p>
+      </article>
+
+      <article class="card step-card">
+        <div class="number">STEP 02</div>
+        <h3>AI Analysis</h3>
+        <p>
+          The system analyses available data and estimates traffic demand.
+          It may recommend suitable signal timings within approved safety limits.
+        </p>
+      </article>
+
+      <article class="card step-card">
+        <div class="number">STEP 03</div>
+        <h3>RFID Identification</h3>
+        <p>
+          A compatible reader may detect a tagged emergency vehicle.
+          The system must verify that the vehicle is authorised before
+          considering a priority request.
+        </p>
+      </article>
+
+      <article class="card step-card">
+        <div class="number">STEP 04</div>
+        <h3>Safe Signal Decision</h3>
+        <p>
+          The controller checks conflicting traffic and clearance requirements.
+          It then applies a permitted signal change without allowing
+          incompatible traffic movements at the same time.
+        </p>
+      </article>
+
+      <article class="card step-card">
+        <div class="number">STEP 05</div>
+        <h3>Signal Operation</h3>
+        <p>
+          Traffic signals display the approved phase. Other road users
+          continue to receive clear instructions, including safe pedestrian
+          crossing indications where provided.
+        </p>
+      </article>
+
+      <article class="card step-card">
+        <div class="number">STEP 06</div>
+        <h3>Monitoring and Review</h3>
+        <p>
+          The system records events and monitors its condition. Authorised
+          operators can review performance and investigate faults or
+          unusual traffic situations.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- RFID AND EMERGENCY VEHICLES -->
+
+<section id="rfid">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">05 / EMERGENCY RESPONSE</div>
+      <h2>RFID-Based <span class="gradient">Emergency Priority</span></h2>
+      <p>
+        Explore how authorised vehicle identification could support
+        a carefully designed emergency signal priority system.
+      </p>
+    </div>
+
+    <div class="long-content">
+
+      <h3>What Is RFID?</h3>
+      <p>
+        RFID means Radio Frequency Identification. It uses a tag and a reader
+        to exchange identification information through radio waves. RFID
+        technology is used in many applications, such as inventory management,
+        access systems and certain vehicle identification systems.
+      </p>
+
+      <h3>How Could It Help an Ambulance?</h3>
+      <p>
+        In a properly designed system, an authorised ambulance could transmit
+        a priority request using supported equipment. The traffic controller
+        would verify the request, evaluate the intersection and coordinate
+        a safe signal transition. This may help the ambulance pass through
+        an intersection more efficiently when conditions permit.
+      </p>
+
+      <h3>Why Is Verification Important?</h3>
+      <p>
+        A real system should not give unrestricted priority to every detected
+        tag. It must authenticate authorised vehicles, protect against misuse,
+        account for conflicting traffic and maintain safe operation.
+        The exact design depends on local traffic regulations and approved
+        infrastructure.
+      </p>
+
+      <h3>Important Note</h3>
+      <p>
+        The RFID button in this website is only a simulated demonstration.
+        It does not read real RFID tags, detect an actual ambulance or
+        operate any real traffic signal.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- ADVANTAGES -->
+
+<section id="advantages">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">06 / BENEFITS</div>
+      <h2>Advantages of <span class="gradient">Smart Traffic Lights</span></h2>
+      <p>
+        When carefully designed and implemented, intelligent traffic
+        management may offer several potential benefits.
+      </p>
+    </div>
+
+    <div class="card-grid">
+
+      <article class="card advantage">
+        <div class="card-icon">⏱️</div>
+        <h3>1. Reduced Waiting Time</h3>
+        <p>
+          Responsive signal timings may reduce unnecessary waiting by
+          allocating green time according to changing traffic demand.
+        </p>
+      </article>
+
+      <article class="card advantage">
+        <div class="card-icon">🚑</div>
+        <h3>2. Emergency Assistance</h3>
+        <p>
+          An authorised priority system may help ambulances and fire engines
+          move through intersections more efficiently when safe to do so.
+        </p>
+      </article>
+
+      <article class="card advantage">
+        <div class="card-icon">⛽</div>
+        <h3>3. Potential Fuel Savings</h3>
+        <p>
+          Reducing unnecessary stopping and idling may help save fuel,
+          depending on traffic conditions and how the system is implemented.
+        </p>
+      </article>
+
+      <article class="card advantage">
+        <div class="card-icon">🌱</div>
+        <h3>4. Environmental Benefits</h3>
+        <p>
+          Better traffic flow may reduce some emissions associated with
+          idling and stop-start driving. The actual benefit depends on
+          the overall transport system.
+        </p>
+      </article>
+
+      <article class="card advantage">
+        <div class="card-icon">📊</div>
+        <h3>5. Better Traffic Information</h3>
+        <p>
+          Recorded traffic information can help planners understand busy
+          periods, identify recurring congestion and improve road management.
+        </p>
+      </article>
+
+      <article class="card advantage">
+        <div class="card-icon">🛣️</div>
+        <h3>6. Smarter City Planning</h3>
+        <p>
+          Connected traffic systems can support data-informed planning
+          and help authorities identify where road improvements may be needed.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- DISADVANTAGES -->
+
+<section id="disadvantages">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">07 / CHALLENGES</div>
+      <h2>Disadvantages and <span class="gradient">Limitations</span></h2>
+      <p>
+        Every technology has challenges. Understanding them is important
+        for responsible innovation.
+      </p>
+    </div>
+
+    <div class="card-grid">
+
+      <article class="card disadvantage">
+        <div class="card-icon">💰</div>
+        <h3>1. High Initial Cost</h3>
+        <p>
+          Installing sensors, compatible controllers, communication equipment
+          and secure monitoring systems can be expensive.
+        </p>
+      </article>
+
+      <article class="card disadvantage">
+        <div class="card-icon">🛠️</div>
+        <h3>2. Maintenance</h3>
+        <p>
+          Equipment needs regular inspection, repairs, software updates
+          and professional support to remain reliable.
+        </p>
+      </article>
+
+      <article class="card disadvantage">
+        <div class="card-icon">📡</div>
+        <h3>3. Technical Failures</h3>
+        <p>
+          Sensors, readers or communication links may fail. Real systems
+          require safe fallback operation and fault monitoring.
+        </p>
+      </article>
+
+      <article class="card disadvantage">
+        <div class="card-icon">🔐</div>
+        <h3>4. Security Risks</h3>
+        <p>
+          Connected infrastructure must be protected against unauthorised
+          access, false priority requests and other cybersecurity threats.
+        </p>
+      </article>
+
+      <article class="card disadvantage">
+        <div class="card-icon">🧠</div>
+        <h3>5. Complex Design</h3>
+        <p>
+          Traffic patterns are unpredictable. AI recommendations must be
+          tested carefully and cannot replace safety rules or professional
+          traffic engineering.
+        </p>
+      </article>
+
+      <article class="card disadvantage">
+        <div class="card-icon">🚶</div>
+        <h3>6. Safety Requirements</h3>
+        <p>
+          Poorly coordinated signal changes could create danger. Pedestrians,
+          cyclists and every conflicting traffic movement must be considered.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+
+<section id="comparison">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">08 / COMPARISON</div>
+      <h2>Traditional vs <span class="gradient">Smart Traffic Lights</span></h2>
+      <p>
+        A simplified comparison of common fixed-time signals and the
+        possibilities offered by responsive traffic management.
+      </p>
+    </div>
+
+    <div class="long-content">
+      <h3>Traditional Traffic Signals</h3>
+      <ul>
+        <li>May use predetermined signal timings.</li>
+        <li>Timing may not always reflect current traffic demand.</li>
+        <li>Emergency priority may require a separate installed system.</li>
+        <li>Performance depends on the timing plan and road conditions.</li>
+      </ul>
+
+      <h3>AI-Assisted Smart Traffic Concept</h3>
+      <ul>
+        <li>May analyse live traffic information when suitable sensors are available.</li>
+        <li>Can recommend signal adjustments within approved limits.</li>
+        <li>May support verified emergency vehicle priority if properly equipped.</li>
+        <li>Can provide data to help operators evaluate traffic performance.</li>
+      </ul>
+
+      <h3>Which Is Better?</h3>
+      <p>
+        The answer depends on the road, traffic patterns, budget and safety
+        requirements. A smart system is not automatically better in every
+        situation. Proper planning, reliable equipment, professional
+        engineering and continuous evaluation are essential.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- LIVE DEMO -->
+
+<section id="demo">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">09 / INTERACTIVE EXPERIENCE</div>
+      <h2>Smart Traffic <span class="gradient">Live Simulation</span></h2>
+      <p>
+        Operate the sample signal controller, observe lane states and test
+        the simulated RFID emergency-priority feature.
+      </p>
+    </div>
+
+    <div class="dashboard">
+
+      <div class="dashboard-head">
+        <h3>TRAFFIC CONTROL CENTRE</h3>
+        <div class="live">● SIMULATION READY</div>
+      </div>
+
+      <div class="lanes">
+
+        <div class="lane">
+          <div class="lane-head">
+            <span>LANE A</span>
+            <span id="badgeA" class="pill">GREEN LIGHT</span>
+          </div>
+
+          <div class="signal-row">
+            <div class="mini-light">
+              <div id="aRed" class="mini-lamp red"></div>
+              <div id="aYellow" class="mini-lamp yellow"></div>
+              <div id="aGreen" class="mini-lamp green on"></div>
+            </div>
+
+            <div>
+              <div id="statusA" class="lane-status" style="color:var(--green)">GO</div>
+              <div id="subA" class="muted">Traffic may proceed</div>
+            </div>
+          </div>
+
+          <div class="muted">PHASE PROGRESS</div>
+          <div class="progress"><div id="progressA"></div></div>
+        </div>
+
+        <div class="lane">
+          <div class="lane-head">
+            <span>LANE B</span>
+            <span id="badgeB" class="pill">RED LIGHT</span>
+          </div>
+
+          <div class="signal-row">
+            <div class="mini-light">
+              <div id="bRed" class="mini-lamp red on"></div>
+              <div id="bYellow" class="mini-lamp yellow"></div>
+              <div id="bGreen" class="mini-lamp green"></div>
+            </div>
+
+            <div>
+              <div id="statusB" class="lane-status" style="color:var(--red)">STOP</div>
+              <div id="subB" class="muted">Wait for green signal</div>
+            </div>
+          </div>
+
+          <div class="muted">PHASE PROGRESS</div>
+          <div class="progress"><div id="progressB"></div></div>
+        </div>
+
+      </div>
+
+      <div class="controls">
+        <button class="control primary" id="startBtn">▶ START AUTO CYCLE</button>
+        <button class="control" id="pauseBtn">Ⅱ PAUSE</button>
+        <button class="control" id="nextBtn">↻ NEXT PHASE</button>
+        <button class="control emergency" id="rfidBtn">⚡ TEST RFID / EMERGENCY</button>
+        <button class="control" id="resetBtn">⟲ RESET DEMO</button>
+      </div>
+
+      <div class="telemetry">
+        <div class="telemetry-item">
+          <span>Controller Status</span>
+          <strong id="telemetryStatus">READY</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span>Current Signal Phase</span>
+          <strong id="telemetryPhase">LANE A GREEN</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span>Countdown</span>
+          <strong id="telemetryTimer">12 SEC</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span>Emergency Priority</span>
+          <strong id="telemetryPriority">INACTIVE</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span>RFID Demo Tests</span>
+          <strong id="statRfid">00</strong>
+        </div>
+
+        <div class="telemetry-item">
+          <span>Phase Changes</span>
+          <strong id="statCycles">00</strong>
+        </div>
+      </div>
+
+      <div class="log">
+        <div class="log-title">▸ SYSTEM EVENT LOG</div>
+        <div id="eventList">System initialized. Ready for demonstration.</div>
+      </div>
+
+      <p class="disclaimer">
+        IMPORTANT: This is a browser-based educational simulation only.
+        The RFID test button imitates an emergency-priority request and
+        temporarily gives Lane B a simulated green light. It does not
+        communicate with real RFID hardware, emergency vehicles or actual
+        traffic signals.
+      </p>
+
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE SCOPE -->
+
+<section id="future">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">10 / FUTURE SCOPE</div>
+      <h2>What Could Come <span class="gradient">Next?</span></h2>
+      <p>
+        With suitable research and engineering, future versions of the
+        concept could explore additional features.
+      </p>
+    </div>
+
+    <div class="card-grid">
+
+      <article class="card">
+        <div class="card-icon">📈</div>
+        <h3>Traffic Prediction</h3>
+        <p>
+          Analyse historical traffic patterns to estimate busy periods
+          and help planners prepare suitable timing plans.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">🚴</div>
+        <h3>Pedestrian and Cyclist Safety</h3>
+        <p>
+          Explore how smart infrastructure could better account for
+          pedestrian crossings, cycling routes and accessible signals.
+        </p>
+      </article>
+
+      <article class="card">
+        <div class="card-icon">🌐</div>
+        <h3>Connected Intersections</h3>
+        <p>
+          Study how nearby intersections might coordinate timings to
+          improve traffic flow across a larger road network.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+
+<section id="conclusion">
+  <div class="container">
+
+    <div class="section-heading">
+      <div class="tag">11 / CONCLUSION</div>
+      <h2>Building a <span class="gradient">Smarter Tomorrow</span></h2>
+    </div>
+
+    <div class="long-content">
+      <h3>Conclusion</h3>
+
+      <p>
+        AI Powered Smart Traffic Light demonstrates how Artificial Intelligence,
+        RFID technology and responsive signal management could contribute to
+        the development of smarter transportation systems. By analysing traffic
+        information and supporting authorised emergency priority, these
+        technologies may help address certain challenges faced by modern cities.
+      </p>
+
+      <p style="margin-top:15px;">
+        However, technology alone cannot solve every traffic problem.
+        Safe road design, responsible driving, public awareness, reliable
+        infrastructure and proper planning remain equally important.
+        Any real traffic control system must be professionally engineered,
+        securely operated and thoroughly tested.
+      </p>
+
+      <p style="margin-top:15px;">
+        Through this project, we learn that innovation is not only about
+        creating new technology. It is also about using knowledge responsibly
+        to improve people's lives. A smarter road system begins with a simple
+        question: how can we make every journey safer and more efficient?
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- CREATOR CREDIT -->
+
+<section id="creator" class="creator">
+  <div class="creator-badge">AS</div>
+
+  <div class="tag">THE MIND BEHIND THE PROJECT</div>
+
+  <h2>
+    Created by <span class="gradient">Aditya Sahu</span>
+  </h2>
+
+  <p>
+    Student from <strong>Mumbai Utkal English High School</strong>, Mumbai<br>
+    Project: AI Powered Smart Traffic Light<br>
+    School Innovation Project
+  </p>
+
+  <p style="margin-top:25px;">
+    <strong>“Think Smart. Innovate Today. Build a Better Tomorrow.”</strong>
+  </p>
+
+  <a href="#intro" class="btn btn-secondary" style="margin-top:25px;">
+    ↑ BACK TO WELCOME SCREEN
+  </a>
+</section>
+
+<footer>
+  AI Powered Smart Traffic Light<br>
+  Created by Aditya Sahu • Student from Mumbai Utkal English High School, Mumbai<br>
+  Educational project and browser simulation. Not connected to real traffic infrastructure.
+</footer>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* WELCOME SCREEN NAVIGATION */
+
+function startProject() {
+  const project = document.getElementById("project");
+
+  project.classList.add("visible");
+
+  setTimeout(() => {
+    document.getElementById("home").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 80);
+}
+
+function showCreatorFromWelcome(event) {
+  event.preventDefault();
+
+  startProject();
+
+  setTimeout(() => {
+    document.getElementById("creator").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 120);
+}
+
+/* TRAFFIC SIGNAL SIMULATION */
+
+const $ = id => document.getElementById(id);
+
+const phases = [
+  { name: "LANE A GREEN", lane: "A", light: "green", duration: 12 },
+  { name: "ALL RED CLEARANCE", lane: "ALL", light: "red", duration: 2 },
+  { name: "LANE B GREEN", lane: "B", light: "green", duration: 12 },
+  { name: "ALL RED CLEARANCE", lane: "ALL", light: "red", duration: 2 }
+];
+
+let phaseIndex = 0;
+let secondsLeft = 12;
+let running = false;
+let timer = null;
+let prioritySeconds = 0;
+let rfidTests = 0;
+let phaseChanges = 0;
+let priorityActivations = 0;
+let toastTimer = null;
+
+function currentPhase() {
+  return phases[phaseIndex];
+}
+
+function setMiniSignal(lane, light) {
+  ["red", "yellow", "green"].forEach(colour => {
+    const id = lane + colour.charAt(0).toUpperCase() + colour.slice(1);
+    $(id).classList.toggle("on", colour === light);
+  });
+}
+
+function setLane(lane, light, message, subtitle, progress) {
+  setMiniSignal(lane.toLowerCase(), light);
+
+  const status = $("status" + lane);
+  const badge = $("badge" + lane);
+
+  status.textContent = message;
+
+  status.style.color =
+    light === "green" ? "var(--green)" :
+    light === "yellow" ? "var(--yellow)" :
+    "var(--red)";
+
+  badge.textContent =
+    light === "green" ? "GREEN LIGHT" :
+    light === "yellow" ? "YELLOW LIGHT" :
+    "RED LIGHT";
+
+  $("sub" + lane).textContent = subtitle;
+  $("progress" + lane).style.width =
+    Math.max(0, Math.min(100, progress)) + "%";
+}
+
+function render() {
+  const phase = currentPhase();
+
+  let aLight = "red";
+  let bLight = "red";
+
+  let aMessage = "STOP";
+  let bMessage = "STOP";
+
+  let aSubtitle = "Wait for green signal";
+  let bSubtitle = "Wait for green signal";
+
+  let aProgress = 0;
+  let bProgress = 0;
+
+  if (prioritySeconds > 0) {
+    bLight = "green";
+    bMessage = "PRIORITY GO";
+    bSubtitle = "Simulated emergency priority";
+    bProgress = prioritySeconds / 30 * 100;
+  } else if (phase.lane === "A") {
+    aLight = phase.light;
+    aMessage = "GO";
+    aSubtitle = "Traffic may proceed";
+    aProgress = (phase.duration - secondsLeft) / phase.duration * 100;
+  } else if (phase.lane === "B") {
+    bLight = phase.light;
+    bMessage = "GO";
+    bSubtitle = "Traffic may proceed";
+    bProgress = (phase.duration - secondsLeft) / phase.duration * 100;
+  }
+
+  setLane("A", aLight, aMessage, aSubtitle, aProgress);
+  setLane("B", bLight, bMessage, bSubtitle, bProgress);
+
+  $("telemetryStatus").textContent = running ? "RUNNING" : "PAUSED";
+
+  $("telemetryPhase").textContent =
+    prioritySeconds > 0 ? "EMERGENCY PRIORITY" : phase.name;
+
+  $("telemetryTimer").textContent =
+    (prioritySeconds > 0 ? prioritySeconds : secondsLeft) + " SEC";
+
+  $("telemetryPriority").textContent =
+    prioritySeconds > 0 ? "ACTIVE" : "INACTIVE";
+
+  $("statRfid").textContent = String(rfidTests).padStart(2, "0");
+  $("statCycles").textContent = String(phaseChanges).padStart(2, "0");
+}
+
+function addEvent(message) {
+  const list = $("eventList");
+  const row = document.createElement("div");
+
+  row.textContent = new Date().toLocaleTimeString() + " — " + message;
+
+  list.prepend(row);
+
+  while (list.children.length > 12) {
+    list.lastElementChild.remove();
+  }
+}
+
+function showToast(message) {
+  const toast = $("toast");
+
+  toast.textContent = message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer = setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
+
+function advancePhase() {
+  phaseIndex = (phaseIndex + 1) % phases.length;
+  secondsLeft = phases[phaseIndex].duration;
+  phaseChanges++;
+
+  addEvent("Signal phase changed: " + phases[phaseIndex].name);
+  render();
+}
+
+function tick() {
+  if (prioritySeconds > 0) {
+    prioritySeconds--;
+
+    if (prioritySeconds === 0) {
+      addEvent("Priority simulation ended. Entering all-red clearance.");
+      phaseIndex = 1;
+      secondsLeft = phases[phaseIndex].duration;
+      phaseChanges++;
+    }
+
+    render();
+    return;
+  }
+
+  secondsLeft--;
+
+  if (secondsLeft <= 0) {
+    advancePhase();
+  } else {
+    render();
+  }
+}
+
+function startCycle() {
+  if (running) {
+    showToast("Automatic cycle is already running.");
+    return;
+  }
+
+  running = true;
+  timer = setInterval(tick, 1000);
+
+  addEvent("Automatic signal cycle started.");
+  render();
+
+  showToast("Traffic simulation started.");
+}
+
+function pauseCycle() {
+  if (!running) {
+    showToast("The simulation is already paused.");
+    return;
+  }
+
+  running = false;
+
+  clearInterval(timer);
+  timer = null;
+
+  addEvent("Automatic cycle paused.");
+  render();
+
+  showToast("Simulation paused.");
+}
+
+function nextPhase() {
+  prioritySeconds = 0;
+  advancePhase();
+  showToast("Signal phase changed.");
+}
+
+function testRFID() {
+  rfidTests++;
+  priorityActivations++;
+  prioritySeconds = 30;
+
+  if (!running) {
+    running = true;
+    timer = setInterval(tick, 1000);
+  }
+
+  addEvent(
+    "Simulated RFID request received. Lane B priority GREEN for 30 seconds."
+  );
+
+  render();
+
+  showToast("RFID demo activated! Lane B priority for 30 seconds.");
+}
+
+function resetDemo() {
+  clearInterval(timer);
+  timer = null;
+
+  running = false;
+  phaseIndex = 0;
+  secondsLeft = phases[0].duration;
+  prioritySeconds = 0;
+  rfidTests = 0;
+  phaseChanges = 0;
+  priorityActivations = 0;
+
+  $("eventList").innerHTML = "";
+
+  addEvent("Demo reset. System ready.");
+  render();
+
+  showToast("Simulation reset successfully.");
+}
+
+$("startBtn").addEventListener("click", startCycle);
+$("pauseBtn").addEventListener("click", pauseCycle);
+$("nextBtn").addEventListener("click", nextPhase);
+$("rfidBtn").addEventListener("click", testRFID);
+$("resetBtn").addEventListener("click", resetDemo);
+
+render();
+</script>
+
+</body>
+</html>
+```
